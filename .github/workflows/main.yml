@@ -11,4 +11,4 @@ jobs:
         uses: actions/checkout@v2  # Checks out your repository's code
 
       - name: Run ChatGPT script
-        run: python /home/ec2-user/chatpycode.py  # Replace with your ChatGPT script path
+        run: python /home/ec2-user/chatpycode.py  # Replace with y  our ChatGPT script path
