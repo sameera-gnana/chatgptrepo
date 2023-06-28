@@ -29,10 +29,8 @@ jobs:
           aws s3api create-bucket --bucket ${{ github.event.inputs.bucket_name }} --region eu-central-1 --create-bucket-configuration LocationConstraint=eu-central-1
           aws s3api wait bucket-exists --bucket ${{ github.event.inputs.bucket_name }}
           
-      - name: Display S3 Bucket ARN
+      - name: Use Bucket Name and ARN in Workflow
         run: |
-          aws s3api get-bucket-location \
-            --bucket ${{ github.event.inputs.bucket_name }} \
-            --query "LocationConstraint" \
-            --output text
+          echo "Bucket Name: ${{ github.event.inputs.bucket_name }}"
+          echo "Bucket ARN: ${{ steps.create_bucket.outputs.bucket_arn }}"
           
