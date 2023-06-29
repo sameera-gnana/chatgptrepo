@@ -21,15 +21,39 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-central-1
-
+    
     - name: Create S3 bucket
       id: create_bucket
       run: |
-        aws s3api create-bucket --bucket ${{ github.event.inputs.bucket_name }} --region eu-central-1 --create-bucket-configuration LocationConstraint=eu-central-1 > bucket_info.txt
-        echo "::set-output name=arn::$(grep -oP '(?<=\"Location\": \").*?(?=\")' bucket_info.txt)"
-        echo "::set-output name=name::${{ github.event.inputs.bucket_name }}"
+        bucket_arn=$(aws s3api create-bucket --bucket ${{ github.event.inputs.bucket_name }} --region eu-central-1 --create-bucket-configuration LocationConstraint=eu-central-1 --query 'BucketArn' --output text)
+        bucket_name=${{ github.event.inputs.bucket_name }}
+        echo "Bucket ARN: $bucket_arn" > bucket_details.txt
+        echo "Bucket Name: $bucket_name" >> bucket_details.txt
+        echo "::set-output name=arn::$bucket_arn"
+        echo "::set-output name=name::$bucket_name"
 
     - name: Display bucket ARN and name
       run: |
         echo "Bucket ARN: ${{ steps.create_bucket.outputs.arn }}"
         echo "Bucket Name: ${{ steps.create_bucket.outputs.name }}"
+
+    - name: Create artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: bucket-details
+        path: bucket_details.txt
+
+
+
+
+#     - name: Create S3 bucket
+#       id: create_bucket
+#       run: |
+#         aws s3api create-bucket --bucket ${{ github.event.inputs.bucket_name }} --region eu-central-1 --create-bucket-configuration LocationConstraint=eu-central-1 > bucket_info.txt
+#         echo "::set-output name=arn::$(grep -oP '(?<=\"Location\": \").*?(?=\")' bucket_info.txt)"
+#         echo "::set-output name=name::${{ github.event.inputs.bucket_name }}"
+
+#     - name: Display bucket ARN and name
+#       run: |
+#         echo "Bucket ARN: ${{ steps.create_bucket.outputs.arn }}"
+#         echo "Bucket Name: ${{ steps.create_bucket.outputs.name }}"
