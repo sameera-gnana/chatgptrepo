@@ -25,10 +25,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: Create S3 Bucket
-        run: |
-          aws s3api create-bucket --bucket ${{ github.event.inputs.bucket_name }} --region eu-central-1 --create-bucket-configuration LocationConstraint=eu-central-1
-          aws s3api wait bucket-exists --bucket ${{ github.event.inputs.bucket_name }}
+#       - name: Create S3 Bucket
+#         run: |
+#           aws s3api create-bucket --bucket ${{ github.event.inputs.bucket_name }} --region eu-central-1 --create-bucket-configuration LocationConstraint=eu-central-1
+#           aws s3api wait bucket-exists --bucket ${{ github.event.inputs.bucket_name }}
           
       - name: Getting s3 details
         id: create_bucket_details
