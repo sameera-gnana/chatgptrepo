@@ -29,7 +29,7 @@ jobs:
         id: create_bucket
         run: |
           bucket_name="${{ github.event.inputs.bucket_name }}"
-          bucket_arn=$(aws s3api create-bucket --bucket $bucket_name --create-bucket-configuration LocationConstraint=us-east-1 --output text --query 'BucketArn')
+          bucket_arn=$(aws s3api create-bucket --bucket $bucket_name --create-bucket-configuration LocationConstraint=eu-central-1 --output text --query 'BucketArn')
           if [ -z "$bucket_arn" ]; then
             echo "Failed to retrieve bucket ARN."
             exit 1
