@@ -34,8 +34,8 @@ jobs:
       - name: store S3 bucket details
         id: create_bucket
         run: |
-          echo "BUCKET_NAME=your_bucket_name" > bucket-info.txt
-          echo "BUCKET_ARN=your_bucket_arn" >> bucket-info.txt
+          echo "BUCKET_NAME=your_bucket_name" > $GITHUB_WORKSPACE/bucket-info.txt
+          echo "BUCKET_ARN=your_bucket_arn" >> $GITHUB_WORKSPACE/bucket-info.txt
           echo "::set-output name=bucket_arn::your_bucket_arn"
 
       - name: Upload bucket-info artifact
