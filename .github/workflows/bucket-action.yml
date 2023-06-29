@@ -1,0 +1,59 @@
+name: Bucket Action second
+
+on:
+  workflow_dispatch:
+    inputs:
+      bucket_name:
+        description: 'Bucket Name'
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Display Bucket Name
+        run:  echo "Bucket Name:${{ github.event.inputs.bucket_name }}"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Create S3 Bucket
+        run: |
+          aws s3api create-bucket --bucket ${{ github.event.inputs.bucket_name }} --region eu-central-1 --create-bucket-configuration LocationConstraint=eu-central-1
+          aws s3api wait bucket-exists --bucket ${{ github.event.inputs.bucket_name }}
+          
+      - name: Generate Bucket Name and ARN
+        id: generate_bucket
+        run: |
+          echo "Bucket Name: ${{ github.event.inputs.bucket_name }}"
+          bucket_name="${{ github.event.inputs.bucket_name }}"
+          bucket_arn="arn:aws:s3:::${bucket_name}"
+          echo $bucket_name > bucket-name.txt
+          echo $bucket_arn > bucket-arn.txt
+
+      - name: Upload Bucket Name Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: bucket-name
+          path: bucket-name.txt
+
+      - name: Upload Bucket ARN Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: bucket-arn
+          path: bucket-arn.txt
+
+      - name: Set Bucket Name and ARN as Output
+        id: set_output
+        run: |
+          bucket_name=$(cat bucket-name.txt)
+          bucket_arn=$(cat bucket-arn.txt)
+          echo "::set-output name=bucket_name::$bucket_name"
+          echo "::set-output name=bucket_arn::$bucket_arn"
