@@ -25,29 +25,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-      - name: Create S3 Bucket
+      - name: Create S3 bucket
         id: create_bucket
         run: |
-          bucket_name="${{ github.event.inputs.bucket_name }}"
-          aws s3api create-bucket --bucket $bucket_name --create-bucket-configuration LocationConstraint=eu-central-1
-          bucket_arn=$(aws s3api get-bucket-location --bucket $bucket_name --query 'LocationConstraint' --output text)
-          echo "::set-output name=bucket_arn::$bucket_arn"
-          if [ -z "$bucket_arn" ]; then
-            echo "Failed to retrieve bucket ARN."
-            exit 1
-          fi
-          echo "::set-output name=bucket_name::$bucket_name"
-          echo "::set-output name=bucket_arn::$bucket_arn"
-          
-      - name: Display bucket details
+         aws s3api create-bucket --bucket ${{ github.event.inputs.bucket_name }} --region eu-central-1 --create-bucket-configuration LocationConstraint=eu-central-1 bucket_info.txt
+         echo "::set-output name=arn::$(grep -oP '(?<=\"Location\": \").*?(?=\")' bucket_info.txt)"
+         echo "::set-output name=name::${{ github.event.inputs.bucket_name }}"
+
+      - name: Display bucket ARN and name
         run: |
-          bucket_name="${{ steps.create_bucket.outputs.bucket_name }}"
-          bucket_arn="${{ steps.create_bucket.outputs.bucket_arn }}"
-          echo "Bucket Name: $bucket_name"
-          echo "Bucket ARN: $bucket_arn"
+          echo "Bucket ARN: ${{ steps.create_bucket.outputs.arn }}"
+          echo "Bucket Name: ${{ steps.create_bucket.outputs.name }}"
           
+                
       - name: Getting s3 details
-        id: create_bucket_details
+        id: push_bucket_details
         run: |
           echo "BUCKET_NAME= $bucket_name" > $GITHUB_WORKSPACE/bucket-info.txt
           echo "BUCKET_ARN= $bucket_arn" >> $GITHUB_WORKSPACE/bucket-info.txt
