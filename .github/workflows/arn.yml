@@ -9,7 +9,7 @@ on:
 
 jobs:
   create_s3_bucket:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - name: Checkout code
