@@ -37,6 +37,7 @@ jobs:
           bucket_arn=$(aws s3api create-bucket --bucket $bucket_name --create-bucket-configuration LocationConstraint=eu-central-1 --output text --query 'BucketARN')
           echo "::set-output name=bucket_name::$bucket_name"
           echo "::set-output name=bucket_arn::$bucket_arn"
+          echo "Bucket ARN: $bucket_arn"
           echo "BUCKET_NAME= $bucket_name" > $GITHUB_WORKSPACE/bucket-info.txt
           echo "BUCKET_ARN= $bucket_arn" >> $GITHUB_WORKSPACE/bucket-info.txt
 
