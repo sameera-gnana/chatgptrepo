@@ -34,7 +34,7 @@ jobs:
         id: create_bucket_details
         run: |
           bucket_name="${{ github.event.inputs.bucket_name }}"
-          bucket_arn=$(aws s3api create-bucket --bucket $bucket_name --create-bucket-configuration LocationConstraint=us-east-1 --output text --query 'BucketARN')
+          bucket_arn=$(aws s3api create-bucket --bucket $bucket_name --create-bucket-configuration LocationConstraint=eu-central-1 --output text --query 'BucketARN')
           echo "::set-output name=bucket_name::$bucket_name"
           echo "::set-output name=bucket_arn::$bucket_arn"
           echo "BUCKET_NAME= $bucket_name" > $GITHUB_WORKSPACE/bucket-info.txt
