@@ -25,35 +25,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
-#       - name: Create S3 Bucket
-#         run: |
-#           aws s3api create-bucket --bucket ${{ github.event.inputs.bucket_name }} --region eu-central-1 --create-bucket-configuration LocationConstraint=eu-central-1
-#           aws s3api wait bucket-exists --bucket ${{ github.event.inputs.bucket_name }}
+      - name: Create S3 Bucket
+        id: create_bucket
+        run: |
+          bucket_name="${{ github.event.inputs.bucket_name }}"
+          bucket_arn=$(aws s3api create-bucket --bucket $bucket_name --create-bucket-configuration LocationConstraint=us-east-1 --output text --query 'BucketArn')
+          if [ -z "$bucket_arn" ]; then
+            echo "Failed to retrieve bucket ARN."
+            exit 1
+          fi
+          echo "::set-output name=bucket_name::$bucket_name"
+          echo "::set-output name=bucket_arn::$bucket_arn"
           
       - name: Getting s3 details
         id: create_bucket_details
         run: |
-          bucket_name="${{ github.event.inputs.bucket_name }}"
-          bucket_arn=$(aws s3api create-bucket --bucket $bucket_name --create-bucket-configuration LocationConstraint=eu-central-1 --output text --query 'BucketARN')
-          echo "::set-output name=bucket_name::$bucket_name"
-          echo "::set-output name=bucket_arn::$bucket_arn"
-          echo "Bucket ARN: $bucket_arn"
           echo "BUCKET_NAME= $bucket_name" > $GITHUB_WORKSPACE/bucket-info.txt
           echo "BUCKET_ARN= $bucket_arn" >> $GITHUB_WORKSPACE/bucket-info.txt
 
-#       - name: Display bucket details
-#         run: |
-#           bucket_name="${{ steps.create_bucket.outputs.bucket_name }}"
-#           bucket_arn="${{ steps.create_bucket.outputs.bucket_arn }}"
-#           echo "Bucket Name: $bucket_name"
-#           echo "Bucket ARN: $bucket_arn"
-
-#       - name: store S3 bucket details
-#         id: create_bucket
-#         run: |
-#           echo "BUCKET_NAME=your_bucket_name" > $GITHUB_WORKSPACE/bucket-info.txt
-#           echo "BUCKET_ARN=your_bucket_arn" >> $GITHUB_WORKSPACE/bucket-info.txt
-#           echo "::set-output name=bucket_arn::your_bucket_arn"
 
       - name: Upload bucket-info artifact
         uses: actions/upload-artifact@v2
