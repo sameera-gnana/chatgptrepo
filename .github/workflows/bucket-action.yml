@@ -32,17 +32,17 @@ jobs:
          echo "::set-output name=arn::$(grep -oP '(?<=\"Location\": \").*?(?=\")' bucket_info.txt)"
          echo "::set-output name=name::${{ github.event.inputs.bucket_name }}"
 
-      - name: Display bucket ARN and name
-        run: |
-          echo "Bucket ARN: ${{ steps.create_bucket.outputs.arn }}"
-          echo "Bucket Name: ${{ steps.create_bucket.outputs.name }}"
+#       - name: Display bucket ARN and name
+#         run: |
+#           echo "Bucket ARN: ${{ steps.create_bucket.outputs.arn }}"
+#           echo "Bucket Name: ${{ steps.create_bucket.outputs.name }}"
           
                 
-      - name: Getting s3 details
-        id: push_bucket_details
-        run: |
-          echo "BUCKET_NAME= $bucket_name" > $GITHUB_WORKSPACE/bucket-info.txt
-          echo "BUCKET_ARN= $bucket_arn" >> $GITHUB_WORKSPACE/bucket-info.txt
+#       - name: Getting s3 details
+#         id: push_bucket_details
+#         run: |
+#           echo "BUCKET_NAME= $bucket_name" > $GITHUB_WORKSPACE/bucket-info.txt
+#           echo "BUCKET_ARN= $bucket_arn" >> $GITHUB_WORKSPACE/bucket-info.txt
 
 
       - name: Upload bucket-info artifact
