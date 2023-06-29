@@ -34,7 +34,7 @@ jobs:
 
 #       - name: Display bucket ARN and name
 #         run: |
-#           echo "Bucket ARN: ${{ steps.create_bucket.outputs.arn }}"
+#           echo "Bucket ARN: ${{ steps.create_bucket.outputs.arn }}" 
 #           echo "Bucket Name: ${{ steps.create_bucket.outputs.name }}"
           
                 
@@ -49,6 +49,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: bucket-info
-          path: bucket-info.txt
+          path: $GITHUB_WORKSPACE/bucket-info.txt
 
         
