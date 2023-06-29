@@ -37,6 +37,13 @@ jobs:
           echo "::set-output name=bucket_name::$bucket_name"
           echo "::set-output name=bucket_arn::$bucket_arn"
           
+      - name: Display bucket details
+        run: |
+          bucket_name="${{ steps.create_bucket.outputs.bucket_name }}"
+          bucket_arn="${{ steps.create_bucket.outputs.bucket_arn }}"
+          echo "Bucket Name: $bucket_name"
+          echo "Bucket ARN: $bucket_arn"
+          
       - name: Getting s3 details
         id: create_bucket_details
         run: |
